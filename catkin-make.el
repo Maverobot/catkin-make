@@ -30,9 +30,6 @@
             (with-current-buffer (process-buffer process)
               (require 'shell)
               (shell-mode)
-              (set-process-filter process 'comint-output-filter))
-            (set-process-sentinel process
-             (lambda (p _m)
-               (with-current-buffer (process-buffer p)
-                 (evil-force-normal-state))))))
+              (read-only-mode)
+              (set-process-filter process 'comint-output-filter))))
       (message "The current file is apparently not under a ROS workspace. If it is, try to initialize the workspace with catkin_make first.") )))
