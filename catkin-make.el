@@ -1,6 +1,6 @@
 
 (defvar catkin-make--output-buffer "*catkin_make*")
-(defvar catkin-make--args "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release")
+(defvar catkin-make--args "-DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON")
 
 (defun catkin-make--recursively-up-find-file (search-path target-file-name)
   (let ((parent-dir (expand-file-name (directory-file-name (file-name-directory search-path)))))
@@ -49,7 +49,7 @@
 
 (defun catkin-make-compile-with-args ()
   (interactive)
-  (catkin-make-compile-current-workspace (read-from-minibuffer "catkin_make args: ")))
+  (catkin-make-compile-current-workspace (catkin-make--read-from-minibuffer "catkin_make args: ")))
 
 (defun catkin-make-keybinding-setup ()
   (spacemacs/declare-prefix "R" "catkin-make")
@@ -57,3 +57,33 @@
   (spacemacs/declare-prefix "RC" "compile with args")
   (spacemacs/set-leader-keys "Rc" 'catkin-make-compile-default)
   (spacemacs/set-leader-keys "RC" 'catkin-make-compile-with-args))
+
+(require 'company)
+(defconst catkin-make--args-completions
+  '("-DCMAKE_BUILD_TYPE=Debug"
+    "-DCMAKE_BUILD_TYPE=Release"
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=OFF"
+    "format" "tidy"))
+
+(defun catkin-make--company-backend (command &optional arg &rest ignored)
+  (interactive (list 'interactive))
+    (case command
+      (interactive (company-begin-backend 'catkin-make--company-backend))
+      (prefix (company-grab-symbol))
+      (candidates
+       (remove-if-not
+        (lambda (c) (string-prefix-p arg c))
+        catkin-make--args-completions))))
+
+(add-to-list 'company-backends 'catkin-make--company-backend)
+(defun my-minibuffer-mode ()
+  (company-mode))
+
+(defun catkin-make--read-from-minibuffer (prompt)
+  ;; TODO: better way to handle this temporary hook
+  (defvar result)
+  (add-hook 'minibuffer-setup-hook 'my-minibuffer-mode)
+  (setq result (read-from-minibuffer prompt))
+  (remove-hook 'minibuffer-setup-hook 'my-minibuffer-mode)
+  result)
