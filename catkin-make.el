@@ -7,16 +7,32 @@
 (defun catkin-make--find-current-catkin-workspace ()
   (catkin-make--recursively-up-find-file (spacemacs--file-path) ".catkin_workspace"))
 
+(defun catkin-make--start-process ()
+  (start-process
+   "catkin_make"
+   "*catkin_make*"
+   "catkin_make"
+   "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release")
+  )
+
 (defun catkin-make-compile-current-workspace()
   "Tidies the HTML content in the buffer using `tidy'"
   (interactive)
   (let ((default-directory (catkin-make--find-current-catkin-workspace)))
     (if default-directory
-        (async-shell-command
-         ;; command and parameters
-         "catkin_make -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release"
-         ;; output buffer
-         "*catkin_make Output*"
-         ;; name of the error buffer
-         "*catkin_make Error")
+        (progn
+          (split-window-below -20)
+          (other-window 1)
+          (switch-to-buffer (get-buffer-create "*catkin_make*"))
+          (erase-buffer)
+          (let ((process
+                 (catkin-make--start-process)))
+            (with-current-buffer (process-buffer process)
+              (require 'shell)
+              (shell-mode)
+              (set-process-filter process 'comint-output-filter))
+            (set-process-sentinel process
+             (lambda (p _m)
+               (with-current-buffer (process-buffer p)
+                 (evil-force-normal-state))))))
       (message "The current file is apparently not under a ROS workspace. If it is, try to initialize the workspace with catkin_make first.") )))
