@@ -38,3 +38,8 @@
               (read-only-mode)
               (set-process-filter process 'comint-output-filter))))
       (message "The current file is apparently not under a ROS workspace. If it is, try to initialize the workspace with catkin_make first.") )))
+
+(defun catkin-make-keybinding-setup ()
+  (spacemacs/declare-prefix "R" "catkin-make")
+  (spacemacs/declare-prefix "Rc" "compile")
+  (spacemacs/set-leader-keys "Rc" 'catkin-make-compile-current-workspace))
