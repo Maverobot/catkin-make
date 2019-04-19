@@ -12,11 +12,10 @@
   (catkin-make--recursively-up-find-file (spacemacs--file-path) ".catkin_workspace"))
 
 (defun catkin-make--start-process (args)
-  (start-process
+  (start-process-shell-command
    "catkin_make"
    catkin-make--output-buffer
-   "catkin_make"
-   args))
+   (concat "catkin_make " args)))
 
 (defun catkin-make-compile-current-workspace(args)
   (let ((default-directory (catkin-make--find-current-catkin-workspace)))
