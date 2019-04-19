@@ -22,7 +22,10 @@
   (let ((default-directory (catkin-make--find-current-catkin-workspace)))
     (if default-directory
         (progn
-          (setq args (or (unless (string-empty-p (string-trim args)) args) catkin-make--args))
+          (if args
+              (setq args (or (unless (string-empty-p (string-trim args)) args) catkin-make--args))
+            (setq args catkin-make--args))
+          (message (concat "catkin_make " args))
           (let* ((output-buffer-window (get-buffer-window catkin-make--output-buffer 'visible)))
             (if output-buffer-window
                 ;; Select the output buffer window if it is already visible
