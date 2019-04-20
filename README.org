@@ -1,5 +1,12 @@
 #+TITLE: catkin-make
 An emacs package for compiling ROS workspaces with [[https://github.com/ros/catkin][catkin]].
+
+* Prerequisite
+  In order to be able to call ~catkin_make~, the line below has to be added into your ~~/.profile~:
+  #+BEGIN_SRC bash
+    source /opt/ros/version/setup.bash
+  #+END_SRC
+
 * Installation
   Use ~load-file~ function to load it in your config file. For example,
   #+BEGIN_SRC emacs-lisp
