@@ -1,5 +1,5 @@
 #+TITLE: catkin-make
-An emacs package for compiling ROS workspaces with catkin_make
+An emacs package for compiling ROS workspaces with [[https://github.com/ros/catkin][catkin]].
 * Installation
   Use ~load-file~ function to load it in your config file. For example,
   #+BEGIN_SRC emacs-lisp
