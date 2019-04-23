@@ -18,13 +18,13 @@
    (concat "catkin_make " args)))
 
 (defun catkin-make-compile-current-workspace(args)
-  (let ((default-directory (catkin-make--find-current-catkin-workspace)))
-    (if default-directory
+  (let ((default-directory-tmp (catkin-make--find-current-catkin-workspace)))
+    (if default-directory-tmp
         (progn
           (if args
               (setq args (or (unless (string-empty-p (string-trim args)) args) catkin-make--args))
             (setq args catkin-make--args))
-          (message (concat "catkin_make " args))
+          (message (concat "catkin_make " args " in " default-directory-tmp))
           (let* ((output-buffer-window (get-buffer-window catkin-make--output-buffer 'visible)))
             (if output-buffer-window
                 ;; Select the output buffer window if it is already visible
@@ -33,8 +33,8 @@
               (split-window-below -20)
               (other-window 1)
               (switch-to-buffer (get-buffer-create catkin-make--output-buffer))))
-          (let ((process
-                 (catkin-make--start-process args)))
+          (let* ((default-directory default-directory-tmp)
+                 (process (catkin-make--start-process args)))
             (with-current-buffer (process-buffer process)
               (require 'shell)
               (shell-mode)
