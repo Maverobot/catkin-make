@@ -23,3 +23,8 @@ An emacs package for compiling ROS workspaces with [[https://github.com/ros/catk
   |-------------+-------------------------------------------------------------------------------|
   | ~SPC R c~     | Run ~catkin_make -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON~ |
   | ~SPC R C~     | Run ~catkin_make~ with args, which will be read from minibuffer                 |
+
+* TODO list
+  - [ ] open a given package folder, similar to ~roscd~.
+  - [ ] open a given package folder, and helm fuzzy find file names.
+  - [ ] open the package folder whose name has the cursor on it.
