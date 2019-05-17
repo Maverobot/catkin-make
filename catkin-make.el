@@ -60,7 +60,6 @@
 (require 'company)
 (defconst catkin-make--args-completions
   '("-DCMAKE_BUILD_TYPE="
-    "-DCMAKE_EXPORT_COMPILE_COMMANDS="
     "-DCMAKE_INSTALL_PREFIX="
     "-DCMAKE_EXPORT_COMPILE_COMMANDS="
     "-DCATKIN_DEVEL_PREFIX="
