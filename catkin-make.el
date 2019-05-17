@@ -48,7 +48,7 @@
 
 (defun catkin-make-compile-with-args ()
   (interactive)
-  (catkin-make-compile-current-workspace (catkin-make--read-from-minibuffer "catkin_make args: ")))
+  (catkin-make-compile-current-workspace (read-from-minibuffer "catkin_make args: ")))
 
 (defun catkin-make-keybinding-setup ()
   (spacemacs/declare-prefix "R" "catkin-make")
@@ -76,14 +76,7 @@
         (lambda (c) (string-prefix-p arg c))
         catkin-make--args-completions))))
 
-(add-to-list 'company-backends 'catkin-make--company-backend)
-(defun my-minibuffer-mode ()
-  (company-mode))
-
-(defun catkin-make--read-from-minibuffer (prompt)
-  ;; TODO: better way to handle this temporary hook
-  (defvar result)
-  (add-hook 'minibuffer-setup-hook 'my-minibuffer-mode)
-  (setq result (read-from-minibuffer prompt))
-  (remove-hook 'minibuffer-setup-hook 'my-minibuffer-mode)
-  result)
+(add-hook 'minibuffer-setup-hook
+          (lambda ()
+            (set (make-local-variable 'company-backends) '(catkin-make--company-backend))
+            (company-mode)))
