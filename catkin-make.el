@@ -1,23 +1,31 @@
+;;; catkin-make --- an emacs package which calls catkin_make of the current file
 
+;;; Commentary:
+
+;;; Code:
 (defvar catkin-make--output-buffer "*catkin_make*")
 (defvar catkin-make--args "-DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON")
 
 (defun catkin-make--recursively-up-find-file (search-path target-file-name)
+  "Try to find a file named TARGET-FILE-NAME recursively up in the directory tree starting from SEARCH-PATH."
   (let ((parent-dir (expand-file-name (directory-file-name (file-name-directory search-path)))))
     (if (file-exists-p (expand-file-name target-file-name parent-dir)) parent-dir
       (if (string= parent-dir "/") nil
         (catkin-make--recursively-up-find-file parent-dir target-file-name)))))
 
 (defun catkin-make--find-current-catkin-workspace ()
+  "Find the ROS root path of the current file."
   (catkin-make--recursively-up-find-file (spacemacs--file-path) ".catkin_workspace"))
 
 (defun catkin-make--start-process (args)
+  "Run catkin_make with ARGS as arguments."
   (start-process-shell-command
    "catkin_make"
    catkin-make--output-buffer
    (concat "catkin_make " args)))
 
 (defun catkin-make-compile-current-workspace(args)
+  "Run catkin_make with arguments ARGS for the workspace, where the edited file belongs."
   (let ((default-directory-tmp (catkin-make--find-current-catkin-workspace)))
     (if default-directory-tmp
         (progn
@@ -43,14 +51,17 @@
       (message "The current file is apparently not under a ROS workspace. If it is, try to initialize the workspace with catkin_make first.") )))
 
 (defun catkin-make-compile-default ()
+  "Run catkin_make of current workspace with default arguments."
   (interactive)
   (catkin-make-compile-current-workspace nil))
 
 (defun catkin-make-compile-with-args ()
+  "Run catkin_make of current workspace with arguments given by minibuffer."
   (interactive)
   (catkin-make-compile-current-workspace (read-from-minibuffer "catkin_make args: ")))
 
 (defun catkin-make-keybinding-setup ()
+  "Set up keybindings for package catkin-make."
   (spacemacs/declare-prefix "R" "catkin-make")
   (spacemacs/declare-prefix "Rc" "compile")
   (spacemacs/declare-prefix "RC" "compile with args")
@@ -67,14 +78,15 @@
     "format" "tidy"))
 
 (defun catkin-make--company-backend (command &optional arg &rest ignored)
+  "`company-mode' backend for catkin_make arguments [COMMAND, ARG, IGNORED]."
   (interactive (list 'interactive))
-    (case command
-      (interactive (company-begin-backend 'catkin-make--company-backend))
-      (prefix (company-grab-symbol))
-      (candidates
-       (remove-if-not
-        (lambda (c) (string-prefix-p arg c))
-        catkin-make--args-completions))))
+  (case command
+    (interactive (company-begin-backend 'catkin-make--company-backend))
+    (prefix (company-grab-symbol))
+    (candidates
+     (remove-if-not
+      (lambda (c) (string-prefix-p arg c))
+      catkin-make--args-completions))))
 
 (add-hook 'minibuffer-setup-hook
           (lambda ()
@@ -82,3 +94,4 @@
             (company-mode)))
 
 (provide 'catkin-make)
+;;; catkin-make.el ends here
