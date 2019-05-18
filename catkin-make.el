@@ -80,3 +80,5 @@
           (lambda ()
             (set (make-local-variable 'company-backends) '(catkin-make--company-backend))
             (company-mode)))
+
+(provide 'catkin-make)
