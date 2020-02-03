@@ -1,4 +1,4 @@
-;;; catkin-make --- an emacs package which calls `catkin_make' of the current file
+;;; catkin-make.el --- an emacs package which calls `catkin_make' from the current file  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
