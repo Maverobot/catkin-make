@@ -80,7 +80,7 @@
 (defun catkin-make--company-backend (command &optional arg &rest ignored)
   "`company-mode' backend for `catkin_make' arguments."
   (interactive (list 'interactive))
-  (case command
+  (cl-case command
     (interactive (company-begin-backend 'catkin-make--company-backend))
     (prefix (company-grab-symbol))
     (candidates
